@@ -2,7 +2,7 @@ name: CMake Multi-Platform Build
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main"]
   pull_request:
     branches: [ "main" ]
 
@@ -35,6 +35,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup CMake
+        uses: lukka/get-cmake@latest
+
       - name: Set reusable strings
         # Store the build directory in the build-output-dir variable
         id: strings
@@ -48,7 +51,6 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        # Look for CMakeLists.txt here
           -S ${{ github.workspace }}
 
       - name: Build
