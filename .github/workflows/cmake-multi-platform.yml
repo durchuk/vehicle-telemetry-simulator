@@ -1,0 +1,56 @@
+name: CMake Multi-Platform Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    # This line allows you to choose the OS dynamically according to the matrix defined below.
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      # If one configuration fails, we continue with the others to see if they pass.
+      fail-fast: false
+
+      # The Matrix: GitHub will create three different virtual jobs
+      matrix:
+        build_type: [Release]
+
+        include:
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+
+          - os: ubuntu-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+
+          - os: ubuntu-latest
+            c_compiler: clang
+            cpp_compiler: clang++
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set reusable strings
+        # Store the build directory in the build-output-dir variable
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+      - name: Configure CMake
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        # Look for CMakeLists.txt here
+          -S ${{ github.workspace }}
+
+      - name: Build
+        # Compilation
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
