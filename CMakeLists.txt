@@ -3,4 +3,9 @@ project(Vehicle_Telemetry_Simulator)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(Vehicle_Telemetry_Simulator main.cpp)
+# Look for the .h files in the include directory if asked for
+include_directories(include)
+
+add_executable(Vehicle_Telemetry_Simulator
+        src/main.cpp
+        src/Engine.cpp)
