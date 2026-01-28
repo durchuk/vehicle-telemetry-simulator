@@ -1,19 +1,20 @@
 #include <iostream>
-#include "Engine.h"
+#include "Gearbox.h"
 
 int main() {
     std::cout << "############## Vehicle Telemetry Simulator ##############\n\n";
-    std::cout << "Testing the engine…\n";
+    std::cout << "Testing the gearbox…\n";
 
-    // Setting the engine to some average values
-    Engine engine(0.007, 0.4, 350);
-    std::cout << "Current RPM: " << engine.getRpm() << std::endl;
-    std::cout << "Pressing gas half way through for 1 second…\n";
-    engine.update(1.0, 0.5);
-    std::cout << "New RPM: " << engine.getRpm() << std::endl;
-
-    std::cout << "\nReleasing the gas for 5 sec…\n";
-    engine.update(5.0, 0);
-    std::cout << "New RPM: " << engine.getRpm() << std::endl;
+    // Setting the gearbox to some average values
+    const std::vector<double> gears = { 0.0, 3.5, 2.0, 1.4, 1.0, 0.8 };
+    Gearbox gearbox(gears);
+    double rpm = 0.0;
+    std::cout << "Current rpm: " << rpm << std::endl;
+    std::cout << "Current gear ratio: " << gearbox.getRatio() << std::endl;
+    std::cout << "Accelerating…\n";
+    rpm += 6500.0;
+    gearbox.updateLogic(rpm, 0.007); // Average friction coefficient
+    std::cout << "Current rpm: " << rpm << std::endl;
+    std::cout << "Current gear ratio: " << gearbox.getRatio() << std::endl;
     return 0;
 }
