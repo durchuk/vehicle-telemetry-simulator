@@ -7,6 +7,8 @@ Vehicle::Vehicle(const double wheelRadiusM,
     double differentialRatio,
     double massKg,
     double maxInjectionL,
+    double dragCoefficient,
+    double frontalAreaM2,
     const Engine& engine,
     const Gearbox&  gearbox)
     : WHEEL_RADIUS(wheelRadiusM),
@@ -14,6 +16,8 @@ Vehicle::Vehicle(const double wheelRadiusM,
     MASS(massKg),
     CAR_MASS_IMPACT((massKg * wheelRadiusM * wheelRadiusM) / (differentialRatio * differentialRatio)),
     MAX_INJECTION(maxInjectionL),
+    DRAG_COEF(dragCoefficient),
+    FRONTAL_AREA(frontalAreaM2),
     engine(engine),
     gearbox(gearbox) {}
 
@@ -86,6 +90,25 @@ void Vehicle::updateCurrentInertia(double currentRatio) {
     engine.setCurrentInertia(currentInertia);
 }
 
+void Vehicle::updateLoadTorque(double currentRatio) {
+    // Calculate air resistance force
+    double dragForce = 0.5 * 1.225 * FRONTAL_AREA * DRAG_COEF * speed * speed;
+    // Calculate rolling resistance force
+    double rollingForce = MASS * 9.81 * 0.015;
+    // Calculate the total resistance
+    double totalResistForce = dragForce + rollingForce;
+    // Calculate the actual torque put on the wheels
+    double torqueAtWheels = totalResistForce * WHEEL_RADIUS;
+
+    // Prevent devising by 0
+    if (currentRatio != 0.0) {
+        // Calculate the torque on the engine
+        loadTorque = torqueAtWheels / (currentRatio * DIFF_RATIO);
+    } else {
+        loadTorque = 0;
+    }
+}
+
 void Vehicle::updateTransmissionTorque(double currentRatio) {
     transmissionTorque = engine.getTorque() * currentRatio;
 }
@@ -98,7 +121,8 @@ void Vehicle::update(double dt) {
     manageTransmission();
     double currentRatio = gearbox.getRatio();
     updateCurrentInertia(currentRatio);
-    engine.update(dt, throttle);
+    updateLoadTorque(currentRatio);
+    engine.update(dt, throttle, loadTorque);
     double rps = engine.getRpm() / 60.0;
     updateFuel(dt, rps);
     updateSpeed(currentRatio, rps);

@@ -23,15 +23,15 @@ void Engine::updateMaxTorqueForRpm() {
     // Phase 3: Exhaust
     // The engine can no longer draw in enough air, causing torque to drop
     else {
-        maxTorqueForRpm = PEAK_TORQUE - (rpm - 5500) * 0.2;
+        maxTorqueForRpm = PEAK_TORQUE - (rpm - 5500) * 0.1;
 
         // The torque cannot be negative
         if (maxTorqueForRpm < 0) maxTorqueForRpm = 0;
     }
 }
 
-void Engine::updateTorque(double throttle) {
-    torque = maxTorqueForRpm * throttle - rpm * FRICTION_COEF;
+void Engine::updateTorque(double throttle, double loadTorque) {
+    torque = maxTorqueForRpm * throttle - rpm * FRICTION_COEF - loadTorque;
 }
 
 void Engine::updateRpm(double dt) {
@@ -47,9 +47,9 @@ void Engine::updateRpm(double dt) {
     if (rpm > 7000.0) rpm = 7000.0;
 }
 
-void Engine::update(double dt, double throttle) {
+void Engine::update(double dt, double throttle, double loadTorque) {
     updateMaxTorqueForRpm();
-    updateTorque(throttle);
+    updateTorque(throttle, loadTorque);
     updateRpm(dt);
 }
 

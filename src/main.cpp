@@ -2,7 +2,6 @@
 #include "Gearbox.h"
 #include "Engine.h"
 #include "Vehicle.h"
-#include <thread>
 #include <chrono>
 #include <fstream>
 
@@ -16,16 +15,16 @@ int main() {
     Engine engine(180,0.007, 0.4);
 
     // Setting other vehicle stats to some average values
-    Vehicle vehicle(0.33, 3.42, 1500, 0.00015, engine, gearbox);
+    Vehicle vehicle(0.33, 3.42, 1500, 0.00015, 0.3, 2.3, engine, gearbox);
 
     // Creating a csv
     std::cout << "Writing simulation data to telemetry.csv…\n";
     std::ofstream file("telemetry.csv");
     file << "Time,Speed_kmh,RPM,Gear,Fuel_L\n";
 
-    std::cout << "Filling up the vehicle…";
+    std::cout << "Filling up the vehicle…\n";
     vehicle.fillUp(5.0);
-    std::cout << "Starting the engine…";
+    std::cout << "Starting the engine…\n";
     vehicle.startEngine();
     std::cout << "Pressing the gas all in!\n";
     double dt = 0.0;
@@ -43,6 +42,6 @@ int main() {
             << vehicle.getFuel() << "\n";
     }
     file.close();
-    std::cout << "Simulation finished.";
+    std::cout << "Simulation finished.\n";
     return 0;
 }

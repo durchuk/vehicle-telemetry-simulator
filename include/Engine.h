@@ -14,7 +14,7 @@ private:
     double rpm = 0.0;
 
     void updateMaxTorqueForRpm();
-    void updateTorque(double throttle);
+    void updateTorque(double throttle, double loadTorque);
     void updateRpm(double dt);
 
 public:
@@ -26,7 +26,7 @@ public:
     [[nodiscard]] double getTorque() const;
     void setCurrentInertia(double inertia);
     void setRpm(double rpm);
-    void update(double dt, double throttle);
+    void update(double dt, double throttle, double loadTorque);
 };
 
 

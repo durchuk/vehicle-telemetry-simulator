@@ -10,9 +10,12 @@ private:
     const double MASS;
     const double CAR_MASS_IMPACT;
     const double MAX_INJECTION;
+    const double DRAG_COEF;
+    const double FRONTAL_AREA;
     double speed = 0.0;
     double fuel = 0.0;
     double throttle = 0.0;
+    double loadTorque = 0.0;
     double transmissionTorque = 0.0;
     double wheelTorque = 0.0;
     Engine engine;
@@ -22,6 +25,7 @@ private:
     void updateSpeed(double currentRatio, double rps);
     void updateFuel(double dt, double rps);
     void updateCurrentInertia(double currentRatio);
+    void updateLoadTorque(double currentRatio);
     void updateTransmissionTorque(double currentRatio);
     void updateWheelTorque();
 
@@ -30,6 +34,8 @@ public:
         double differentialRatio,
         double massKg,
         double maxInjectionL,
+        double dragCoefficient,
+        double frontalAreaM2,
         const Engine& engine,
         const Gearbox& gearbox);
     void accelerate(double throttlePercent); // a throttle setter
