@@ -11,7 +11,8 @@ private:
 public:
     Gearbox(const std::vector<double>& ratios);
     [[nodiscard]] double getRatio() const;
-    void updateLogic(double currentRpm, double frictionCoef);
+    [[nodiscard]] int getGear() const;
+    void updateLogic(double currentRpm, double throttle, double frictionCoef);
 };
 
 

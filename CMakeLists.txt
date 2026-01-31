@@ -9,4 +9,5 @@ include_directories(include)
 add_executable(Vehicle_Telemetry_Simulator
         src/main.cpp
         src/Engine.cpp
-        src/Gearbox.cpp)
+        src/Gearbox.cpp
+        src/Vehicle.cpp)
